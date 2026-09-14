@@ -7,6 +7,7 @@ import {
   SITE,
   whatsappLink,
   mapsLink,
+  textoHorario,
   ANIVERSARIO_PADRAO,
   ANIVERSARIO_VOUCHER_PADRAO,
   EVENTO_PRIVADO_OCASIOES,
@@ -39,6 +40,7 @@ type Config = {
   endereco?: string;
   endereco_completo?: string;
   horario_funcionamento?: string;
+  horarios?: unknown;
   instagram?: string;
   link_sympla?: string;
   aniversario_titulo?: string;
@@ -472,8 +474,10 @@ export default async function Home() {
             <MapPinIcon className="w-4 h-4 text-green-light shrink-0" />
             {endereco}
           </a>
-          {config.horario_funcionamento && (
-            <p className="text-bone-dim/70 text-sm mb-8">{config.horario_funcionamento}</p>
+          {textoHorario(config.horarios, config.horario_funcionamento) && (
+            <p className="text-bone-dim/70 text-sm mb-8">
+              {textoHorario(config.horarios, config.horario_funcionamento)}
+            </p>
           )}
 
           <div className="flex gap-4 justify-center flex-wrap mt-8">

@@ -63,6 +63,9 @@
 /* ---------- Base ---------- */
 html {
   scroll-behavior: smooth;
+  /* Evita o "zoom" e o delay de toque em navegadores móveis */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -71,6 +74,44 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  /* Remove o delay de 300ms e melhora a resposta ao toque */
+  touch-action: manipulation;
+}
+
+/* ---------- Comportamento de toque no mobile ----------
+   Em telas de toque, o long-press em qualquer texto abre o menu nativo
+   ("Pesquisar no Google", "Copiar", etc.), o que atrapalha o uso do site.
+   Desativamos a seleção e o callout em elementos de interface (navegação,
+   botões, ícones, rodapé, formulários), mas mantemos a seleção em blocos
+   de conteúdo real (parágrafos, descrições, textos longos). */
+@media (hover: none) and (pointer: coarse) {
+  /* UI interativa: sem seleção, sem menu de contexto, sem callout */
+  nav,
+  header,
+  footer,
+  button,
+  a,
+  label,
+  input,
+  textarea,
+  select,
+  [role="button"],
+  .kicker,
+  .btn-primary,
+  .btn-outline,
+  .btn-green {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Conteúdo editorial: seleção liberada para copiar textos úteis */
+  p,
+  article,
+  .conteudo-selecionavel {
+    -webkit-user-select: text;
+    user-select: text;
+  }
 }
 
 /* Textura sutil de grão sobre todo o site */

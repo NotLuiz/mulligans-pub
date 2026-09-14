@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
-import { SITE, whatsappLink, mapsLink } from "@/lib/site";
+import { SITE, whatsappLink, mapsLink, textoHorario } from "@/lib/site";
 import {
   InstagramIcon,
   WhatsappIcon,
@@ -16,6 +16,7 @@ type Config = {
   endereco?: string;
   endereco_completo?: string;
   horario_funcionamento?: string;
+  horarios?: unknown;
   instagram?: string;
   whatsapp?: string;
   link_cardapio?: string;
@@ -38,6 +39,7 @@ export default async function Footer() {
   const endereco = config.endereco_completo || config.endereco || SITE.endereco;
   const cardapio = config.link_cardapio || SITE.cardapio;
   const sympla = config.link_sympla || SITE.sympla;
+  const horario = textoHorario(config.horarios, config.horario_funcionamento);
 
   const sociais = [
     { href: `https://instagram.com/${instagramHandle}`, label: "Instagram", Icon: InstagramIcon },
@@ -89,30 +91,45 @@ export default async function Footer() {
           </div>
         </div>
 
-        <div>
+        <div className="select-none">
           <h4 className="kicker mb-4">
             <span className="h-px w-6 bg-green-light" />
             Contato
           </h4>
-          <ul className="space-y-3 text-sm text-bone-dim">
-            <li className="flex items-start gap-2">
-              <MapPinIcon className="w-4 h-4 mt-0.5 shrink-0 text-green-light" />
+
+          {/* Endereço — texto informativo + link explícito para o mapa */}
+          <div className="flex items-start gap-2 mb-4">
+            <MapPinIcon className="w-4 h-4 mt-0.5 shrink-0 text-green-light" />
+            <div className="text-sm text-bone-dim">
+              <p className="leading-relaxed">{endereco}</p>
               <a
                 href={mapsLink(endereco)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-green-light transition underline-offset-4 hover:underline"
+                className="inline-flex items-center gap-1 mt-1 text-green-light hover:text-orange transition underline underline-offset-4 decoration-green-light/40"
               >
-                {endereco}
+                Ver no Google Maps
+                <span aria-hidden="true">↗</span>
               </a>
-            </li>
-            {config.horario_funcionamento && (
-              <li className="flex items-start gap-2">
-                <ClockIcon className="w-4 h-4 mt-0.5 shrink-0 text-green-light" />
-                <span>{config.horario_funcionamento}</span>
-              </li>
-            )}
-            <li>
+            </div>
+          </div>
+
+          {/* Horário de funcionamento */}
+          {horario && (
+            <div className="flex items-start gap-2 mb-4">
+              <ClockIcon className="w-4 h-4 mt-0.5 shrink-0 text-green-light" />
+              <div className="text-sm text-bone-dim">
+                <p className="text-bone/80 font-medium mb-0.5">Horário</p>
+                <p className="leading-relaxed">{horario}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Redes e contato direto */}
+          <div className="flex items-start gap-2">
+            <InstagramIcon className="w-4 h-4 mt-0.5 shrink-0 text-green-light" />
+            <div className="text-sm text-bone-dim">
+              <p className="text-bone/80 font-medium mb-0.5">Redes</p>
               <a
                 href={`https://instagram.com/${instagramHandle}`}
                 target="_blank"
@@ -121,8 +138,8 @@ export default async function Footer() {
               >
                 @{instagramHandle}
               </a>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
 
         <div>

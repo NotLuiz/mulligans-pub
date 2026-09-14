@@ -1,6 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import {
+  DIAS_SEMANA,
+  HORARIOS_PADRAO,
+  normalizarHorarios,
+  formatarHorarios,
+  type Horarios,
+} from "@/lib/site";
 
 export default function ConfiguracoesAdmin() {
   const [form, setForm] = useState({
@@ -9,7 +16,6 @@ export default function ConfiguracoesAdmin() {
     texto_sobre: "",
     endereco: "",
     endereco_completo: "",
-    horario_funcionamento: "",
     instagram: "",
     whatsapp: "",
     aniversario_titulo: "",
@@ -17,6 +23,7 @@ export default function ConfiguracoesAdmin() {
     aniversario_voucher: "",
     evento_privado_texto: "",
   });
+  const [horarios, setHorarios] = useState<Horarios>(HORARIOS_PADRAO);
   const [loading, setLoading] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [msg, setMsg] = useState("");
@@ -29,14 +36,13 @@ export default function ConfiguracoesAdmin() {
       .maybeSingle()
       .then(({ data, error }) => {
         if (error) setErro("Não foi possível carregar as configurações.");
-        if (data)
+        if (data) {
           setForm({
             link_cardapio: data.link_cardapio || "",
             link_sympla: data.link_sympla || "",
             texto_sobre: data.texto_sobre || "",
             endereco: data.endereco || "",
             endereco_completo: data.endereco_completo || "",
-            horario_funcionamento: data.horario_funcionamento || "",
             instagram: data.instagram || "",
             whatsapp: data.whatsapp || "",
             aniversario_titulo: data.aniversario_titulo || "",
@@ -44,6 +50,8 @@ export default function ConfiguracoesAdmin() {
             aniversario_voucher: data.aniversario_voucher || "",
             evento_privado_texto: data.evento_privado_texto || "",
           });
+          setHorarios(normalizarHorarios(data.horarios));
+        }
         setLoading(false);
       });
   }, []);
@@ -55,11 +63,25 @@ export default function ConfiguracoesAdmin() {
     setErro("");
     const { error } = await supabase
       .from("configuracoes")
-      .upsert({ id: 1, ...form }, { onConflict: "id" });
+      .upsert(
+        { id: 1, ...form, horarios, horario_funcionamento: formatarHorarios(horarios) },
+        { onConflict: "id" },
+      );
     setSalvando(false);
     if (error) return setErro("Erro ao salvar: " + error.message);
     setMsg("✅ Salvo com sucesso!");
     setTimeout(() => setMsg(""), 3000);
+  }
+
+  function atualizarDia(
+    key: keyof Horarios,
+    campo: "fechado" | "abre" | "fecha",
+    valor: boolean | string,
+  ) {
+    setHorarios((prev) => ({
+      ...prev,
+      [key]: { ...prev[key], [campo]: valor },
+    }));
   }
 
   const inputClass =
@@ -120,10 +142,11 @@ export default function ConfiguracoesAdmin() {
             />
           </div>
           <div>
-            <label className="block text-sm mb-1 text-bone-dim">Horário de Funcionamento</label>
+            <label className="block text-sm mb-1 text-bone-dim">Instagram</label>
             <input
-              value={form.horario_funcionamento}
-              onChange={(e) => setForm({ ...form, horario_funcionamento: e.target.value })}
+              value={form.instagram}
+              onChange={(e) => setForm({ ...form, instagram: e.target.value })}
+              placeholder="@mulligans.bh"
               className={inputClass}
             />
           </div>
@@ -139,24 +162,71 @@ export default function ConfiguracoesAdmin() {
           />
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm mb-1 text-bone-dim">Instagram</label>
-            <input
-              value={form.instagram}
-              onChange={(e) => setForm({ ...form, instagram: e.target.value })}
-              placeholder="@mulligans.bh"
-              className={inputClass}
-            />
+        <div>
+          <label className="block text-sm mb-1 text-bone-dim">WhatsApp</label>
+          <input
+            value={form.whatsapp}
+            onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
+            placeholder="5531995550660"
+            className={inputClass}
+          />
+        </div>
+
+        {/* ---------- Horário de funcionamento ---------- */}
+        <div className="border-t border-green/20 pt-5">
+          <h2 className="font-display text-2xl text-bone mb-1">Horário de Funcionamento</h2>
+          <p className="text-sm text-bone-dim mb-4">
+            Marque <strong className="text-bone">Fechado</strong> nos dias em que o pub não abre.
+            Nos demais, informe o horário de abertura e fechamento.
+          </p>
+
+          <div className="space-y-2">
+            {DIAS_SEMANA.map(({ key, label }) => {
+              const dia = horarios[key];
+              return (
+                <div
+                  key={key}
+                  className="flex flex-wrap items-center gap-3 bg-charcoal/60 border border-green/15 rounded-md px-3 py-2.5"
+                >
+                  <span className="w-24 text-sm text-bone font-medium">{label}</span>
+
+                  <label className="flex items-center gap-2 text-sm text-bone-dim cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={dia.fechado}
+                      onChange={(e) => atualizarDia(key, "fechado", e.target.checked)}
+                      className="w-4 h-4 accent-orange"
+                    />
+                    Fechado
+                  </label>
+
+                  {!dia.fechado && (
+                    <div className="flex items-center gap-2 ml-auto">
+                      <input
+                        type="time"
+                        value={dia.abre}
+                        onChange={(e) => atualizarDia(key, "abre", e.target.value)}
+                        className="bg-charcoal border border-green/25 rounded-md px-2 py-1.5 text-bone outline-none focus:border-orange transition"
+                      />
+                      <span className="text-bone-dim text-sm">às</span>
+                      <input
+                        type="time"
+                        value={dia.fecha}
+                        onChange={(e) => atualizarDia(key, "fecha", e.target.value)}
+                        className="bg-charcoal border border-green/25 rounded-md px-2 py-1.5 text-bone outline-none focus:border-orange transition"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-          <div>
-            <label className="block text-sm mb-1 text-bone-dim">WhatsApp</label>
-            <input
-              value={form.whatsapp}
-              onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-              placeholder="5531995550660"
-              className={inputClass}
-            />
+
+          <div className="mt-4 bg-charcoal/40 border border-green/15 rounded-md px-3 py-2.5">
+            <p className="text-xs uppercase tracking-[0.2em] text-green-light mb-1">
+              Como aparece no site
+            </p>
+            <p className="text-sm text-bone-dim">{formatarHorarios(horarios)}</p>
           </div>
         </div>
 
