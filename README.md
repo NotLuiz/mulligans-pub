@@ -30,7 +30,7 @@ O site reúne:
 
 ## Acesso
 
-- **Site:** [themulliganspub.vercel.app](https://themulliganspub.vercel.app)
+- **Site:** [mulliganspub.vercel.app](https://mulliganspub.vercel.app)
 - **Painel administrativo:** `/admin` (acesso restrito à equipe)
 
 ---
