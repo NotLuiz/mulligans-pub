@@ -1,26 +1,279 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   THE MULLIGAN'S PUB — DESIGN SYSTEM v2
+   Estética: pub irlandês moderno
+   Verde institucional · Laranja de ação · Branco osso · Preto esverdeado
+   ============================================================ */
+
+@theme {
+  /* Fundos */
+  --color-ink: #0b0f0d;
+  --color-ink-soft: #111714;
+  --color-charcoal: #18211c;
+  --color-charcoal-light: #22302a;
+
+  /* Texto */
+  --color-bone: #f4f7f4;
+  --color-bone-dim: #a9b5ad;
+
+  /* Verde institucional */
+  --color-green: #1f7a4d;
+  --color-green-light: #2fa86a;
+  --color-green-dark: #145034;
+
+  /* Laranja de ação */
+  --color-orange: #f97316;
+  --color-orange-light: #fb923c;
+  --color-orange-dark: #c2410c;
+
+  /* Tipografia */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-pirata), ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  /* Animações */
+  --animate-flicker: flicker 4s linear infinite;
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 6px rgba(249, 115, 22, 0.9), 0 0 22px rgba(249, 115, 22, 0.5),
+      0 0 48px rgba(249, 115, 22, 0.28);
+  }
+  20%, 24%, 55% {
+    opacity: 0.72;
+    text-shadow: none;
   }
 }
 
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ink);
+  color: var(--color-bone);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Textura sutil de grão sobre todo o site */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+::selection {
+  background: var(--color-orange);
+  color: #fff;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--color-green-dark), var(--color-green));
+  border-radius: 999px;
+  border: 2px solid var(--color-ink);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-green-light);
+}
+
+/* ---------- Utilitários temáticos ---------- */
+@utility font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+@utility text-orange-glow {
+  color: var(--color-orange-light);
+  text-shadow: 0 0 6px rgba(249, 115, 22, 0.9), 0 0 22px rgba(249, 115, 22, 0.5);
+}
+
+@utility text-green-glow {
+  color: var(--color-green-light);
+  text-shadow: 0 0 10px rgba(47, 168, 106, 0.45);
+}
+
+/* Linha divisória ornamentada */
+@utility divider-ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--color-green-light);
+}
+@utility divider-ornament-line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--color-green-light), transparent);
+}
+
+/* Cartão */
+@utility card-rustic {
+  background: linear-gradient(160deg, var(--color-charcoal) 0%, var(--color-ink-soft) 100%);
+  border: 1px solid rgba(47, 168, 106, 0.18);
+  border-radius: 0.75rem;
+  box-shadow: 0 18px 40px -24px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+@utility card-rustic-hover {
+  border-color: rgba(249, 115, 22, 0.55);
+  transform: translateY(-4px);
+  box-shadow: 0 26px 50px -22px rgba(249, 115, 22, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Botão primário (laranja) */
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, var(--color-orange-light), var(--color-orange-dark));
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.35), 0 10px 30px -12px rgba(249, 115, 22, 0.8);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+@utility btn-primary-hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.6), 0 16px 38px -12px rgba(249, 115, 22, 0.95);
+}
+
+/* Botão secundário (contorno verde) */
+@utility btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(11, 15, 13, 0.55);
+  color: var(--color-bone);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(47, 168, 106, 0.45);
+  backdrop-filter: blur(6px);
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+@utility btn-outline-hover {
+  border-color: var(--color-green-light);
+  color: var(--color-green-light);
+  transform: translateY(-2px);
+}
+
+/* Botão verde (institucional) */
+@utility btn-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(180deg, var(--color-green-light), var(--color-green-dark));
+  color: #fff;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+@utility btn-green-hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* Etiqueta / kicker */
+@utility kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-green-light);
+}
+
+/* Foto em P&B que ganha cor no hover */
+@utility photo-bw {
+  filter: grayscale(100%) contrast(1.05);
+  transition: filter 0.5s ease, transform 0.6s ease;
+}
+@utility photo-bw-hover {
+  filter: grayscale(0%) contrast(1);
+  transform: scale(1.05);
+}
+
+/* Vinheta para imagens de fundo */
+@utility vignette {
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(11, 15, 13, 0.85) 100%);
+}
+
+/* ---------- Textura Grunge ----------
+   Aplica uma textura desgastada/rugosa sobre o texto usando a própria
+   cor do texto como máscara (background-clip: text). Ideal para títulos
+   grandes em font-display. */
+@utility text-grunge {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.55'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, var(--color-bone) 0%, var(--color-bone) 100%);
+  background-blend-mode: multiply;
+  background-size: 300px 300px, 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: contrast(1.08) brightness(1.02);
+}
+
+/* Variante grunge com brilho laranja (para o título do Hero) */
+@utility text-grunge-orange {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, var(--color-orange-light) 0%, var(--color-orange) 55%, var(--color-orange-dark) 100%);
+  background-blend-mode: multiply;
+  background-size: 300px 300px, 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(249, 115, 22, 0.45));
+}
+
+/* Variante grunge verde (cor institucional — para o nome do pub) */
+@utility text-grunge-green {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, var(--color-green-light) 0%, var(--color-green) 55%, var(--color-green-dark) 100%);
+  background-blend-mode: multiply;
+  background-size: 300px 300px, 100% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 18px rgba(47, 168, 106, 0.45));
 }
