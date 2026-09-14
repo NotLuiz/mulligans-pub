@@ -33,6 +33,101 @@ export function mapsLink(endereco: string = SITE.endereco) {
 }
 
 /* ============================================================
+   FUSO HORÁRIO — formatação de datas dos eventos
+   ============================================================
+   O servidor (Vercel) roda em UTC. Se usarmos `format(new Date(...))`
+   do date-fns, um evento salvo às 19:00 de Brasília (22:00 UTC)
+   apareceria como "22:00". Por isso formatamos SEMPRE no fuso de
+   São Paulo, independente de onde o código roda (servidor ou browser).
+   ============================================================ */
+
+/** Fuso oficial do pub. */
+export const TIMEZONE = "America/Sao_Paulo";
+
+/**
+ * Formata uma data ISO no fuso de Brasília.
+ * @param iso   Data em ISO (ex.: "2026-09-20T22:00:00.000Z").
+ * @param opts  Opções do Intl.DateTimeFormat (ex.: { hour: "2-digit" }).
+ */
+export function formatarData(
+  iso: string | Date,
+  opts: Intl.DateTimeFormatOptions,
+  locale = "pt-BR"
+) {
+  const d = typeof iso === "string" ? new Date(iso) : iso;
+  if (isNaN(d.getTime())) return "";
+  return new Intl.DateTimeFormat(locale, { timeZone: TIMEZONE, ...opts }).format(d);
+}
+
+/** Data curta no fuso do pub — ex.: "20 set". */
+export function formatarDiaMes(iso: string | Date) {
+  return formatarData(iso, { day: "2-digit", month: "short" }).replace(".", "");
+}
+
+/** Data completa no fuso do pub — ex.: "20 set 2026". */
+export function formatarDataCompleta(iso: string | Date) {
+  return formatarData(iso, { day: "2-digit", month: "short", year: "numeric" }).replace(".", "");
+}
+
+/** Dia da semana + hora no fuso do pub — ex.: "domingo • 19:00". */
+export function formatarDiaSemanaHora(iso: string | Date) {
+  return formatarData(iso, {
+    weekday: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
+
+/** Data + hora no fuso do pub — ex.: "20 set 2026 • 19:00". */
+export function formatarDataHora(iso: string | Date) {
+  return formatarData(iso, {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).replace(".", "");
+}
+
+/** Apenas a hora de um evento no fuso do pub — ex.: "19:00". */
+export function formatarHoraEvento(iso: string | Date) {
+  return formatarData(iso, { hour: "2-digit", minute: "2-digit", hour12: false });
+}
+
+/**
+ * Converte o valor de um input `datetime-local` (ex.: "2026-09-20T19:00"),
+ * que está no horário de Brasília, para ISO em UTC de forma correta.
+ * Evita o bug de o navegador/servidor interpretar em outro fuso.
+ */
+export function localParaISO(valorLocal: string): string {
+  // "2026-09-20T19:00" → tratamos como horário de Brasília (UTC-3).
+  // Brasília não tem mais horário de verão, então o offset é fixo -03:00.
+  return new Date(`${valorLocal}:00-03:00`).toISOString();
+}
+
+/**
+ * Converte uma data ISO (UTC) para o formato aceito pelo input
+ * `datetime-local`, já no fuso de Brasília — ex.: "2026-09-20T19:00".
+ */
+export function isoParaLocalInput(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const partes = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(d);
+  // sv-SE devolve "YYYY-MM-DD HH:mm" — trocamos o espaço por "T".
+  return partes.replace(" ", "T");
+}
+
+/* ============================================================
    HORÁRIO DE FUNCIONAMENTO ESTRUTURADO
    ============================================================
    O admin edita uma grade por dia da semana. Guardamos um objeto

@@ -1,9 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import Calendar from "@/components/Calendar";
 import Image from "next/image";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { SITE } from "@/lib/site";
+import { SITE, formatarDataHora } from "@/lib/site";
 import { SymplaIcon } from "@/components/SocialIcons";
 
 export const revalidate = 60;
@@ -93,7 +91,7 @@ export default async function EventosPage() {
                 )}
                 <div className="p-5 flex-1">
                   <p className="text-green-light text-xs font-semibold uppercase tracking-widest mb-1">
-                    {format(new Date(ev.data), "dd MMM yyyy • HH:mm", { locale: ptBR })}
+                    {formatarDataHora(ev.data)}
                   </p>
                   <h3 className="font-display text-2xl text-bone mb-1 group-hover:text-orange-light transition">
                     {ev.titulo}

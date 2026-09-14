@@ -2,8 +2,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatarDataHora } from "@/lib/site";
 
 type Evento = { id: string; titulo: string; data: string; publicado: boolean };
 
@@ -64,7 +63,7 @@ export default function EventosAdmin() {
             >
               <div>
                 <p className="text-green-light text-xs font-semibold uppercase tracking-widest">
-                  {format(new Date(ev.data), "dd MMM yyyy • HH:mm", { locale: ptBR })}
+                  {formatarDataHora(ev.data)}
                 </p>
                 <p className="font-display text-2xl text-bone">{ev.titulo}</p>
                 <p className="text-xs text-bone-dim">

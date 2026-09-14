@@ -5,11 +5,27 @@ import {
   addMonths, subMonths, startOfWeek, endOfWeek, isSameMonth, isToday,
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatarHoraEvento, TIMEZONE } from "@/lib/site";
 
 type Evento = {
   id: string; titulo: string; descricao?: string; data: string;
   imagem_url?: string; link_sympla?: string;
 };
+
+/**
+ * Converte uma data ISO (UTC) para um objeto Date "deslocado" para o
+ * fuso de Brasília. Assim, `isSameDay` e `format` do date-fns (que usam
+ * o fuso local do navegador) comparam o dia correto do calendário.
+ */
+function paraFusoLocal(iso: string): Date {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return d;
+  // Descobre o offset do fuso do pub naquele instante e aplica.
+  const utc = new Date(d.toLocaleString("en-US", { timeZone: "UTC" }));
+  const sp = new Date(d.toLocaleString("en-US", { timeZone: TIMEZONE }));
+  const diff = sp.getTime() - utc.getTime();
+  return new Date(d.getTime() + diff);
+}
 
 export default function Calendar({ eventos }: { eventos: Evento[] }) {
   const [current, setCurrent] = useState(new Date());
@@ -22,10 +38,10 @@ export default function Calendar({ eventos }: { eventos: Evento[] }) {
   const days = eachDayOfInterval({ start: gridStart, end: gridEnd });
 
   const eventosDoDia = (day: Date) =>
-    eventos.filter((e) => isSameDay(new Date(e.data), day));
+    eventos.filter((e) => isSameDay(paraFusoLocal(e.data), day));
 
   const eventosSelecionados = selected
-    ? eventos.filter((e) => isSameDay(new Date(e.data), selected))
+    ? eventos.filter((e) => isSameDay(paraFusoLocal(e.data), selected))
     : [];
 
   return (
@@ -100,7 +116,7 @@ export default function Calendar({ eventos }: { eventos: Evento[] }) {
                 <div key={ev.id} className="bg-charcoal rounded-lg p-4 border border-green/15">
                   <p className="font-display text-xl text-bone">{ev.titulo}</p>
                   <p className="text-xs text-bone-dim mb-3">
-                    {format(new Date(ev.data), "HH:mm")}
+                    {formatarHoraEvento(ev.data)}
                     {ev.descricao ? ` — ${ev.descricao}` : ""}
                   </p>
                   {ev.link_sympla && (

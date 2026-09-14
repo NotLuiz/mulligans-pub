@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { localParaISO, isoParaLocalInput } from "@/lib/site";
 
 type Props = { id?: string };
 
@@ -40,7 +41,8 @@ export default function EventoForm({ id }: Props) {
         if (error || !ev) return;
         setTitulo(ev.titulo);
         setDescricao(ev.descricao || "");
-        setData(ev.data.slice(0, 16));
+        // Converte o ISO (UTC) para o formato do input, já no fuso de Brasília.
+        setData(isoParaLocalInput(ev.data));
         setLocal(ev.local || "The Mulligan's Pub");
         setLink(ev.link_sympla || "");
         setPublicado(ev.publicado);
@@ -78,7 +80,9 @@ export default function EventoForm({ id }: Props) {
     const payload = {
       titulo,
       descricao,
-      data: new Date(data).toISOString(),
+      // O input datetime-local está no horário de Brasília; convertemos
+      // para UTC corretamente (evita o evento "pular" 3 horas).
+      data: localParaISO(data),
       local,
       link_sympla: link || null,
       imagem_url: imagemUrl || null,

@@ -1,13 +1,13 @@
 import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import Image from "next/image";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import {
   SITE,
   whatsappLink,
   mapsLink,
   textoHorario,
+  formatarDiaMes,
+  formatarDiaSemanaHora,
   ANIVERSARIO_PADRAO,
   ANIVERSARIO_VOUCHER_PADRAO,
   EVENTO_PRIVADO_OCASIOES,
@@ -227,12 +227,12 @@ export default async function Home() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
                   <span className="absolute top-3 left-3 bg-orange text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                    {format(new Date(ev.data), "dd MMM", { locale: ptBR })}
+                    {formatarDiaMes(ev.data)}
                   </span>
                 </div>
                 <div className="p-6 flex flex-col flex-1">
                   <p className="text-green-light text-xs font-semibold uppercase tracking-widest mb-2">
-                    {format(new Date(ev.data), "EEEE • HH:mm", { locale: ptBR })}
+                    {formatarDiaSemanaHora(ev.data)}
                   </p>
                   <h3 className="font-display text-2xl text-bone mb-3 group-hover:text-orange-light transition">
                     {ev.titulo}
