@@ -84,7 +84,7 @@ export default async function EventosPage() {
                   <div className="relative sm:w-40 h-44 sm:h-auto shrink-0 overflow-hidden">
                     <Image
                       src={ev.imagem_url}
-                      alt={ev.titulo}
+                      alt={ev.titulo || "Evento no The Mulligan's Pub"}
                       fill
                       sizes="(max-width: 640px) 100vw, 160px"
                       className="object-cover photo-bw group-hover:photo-bw-hover"

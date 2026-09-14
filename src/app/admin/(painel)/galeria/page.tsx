@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
-type Foto = { id: string; imagem_url: string; titulo: string; categoria: string };
+type Foto = { id: string; imagem_url: string; titulo: string | null; categoria: string };
 
 const MAX_MB = 8;
 
@@ -143,7 +143,7 @@ export default function GaleriaAdmin() {
             >
               <Image
                 src={f.imagem_url}
-                alt={f.titulo}
+                alt={f.titulo || "Foto da galeria do The Mulligan's Pub"}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"
                 className="object-cover"

@@ -215,7 +215,7 @@ export default async function Home() {
                   {ev.imagem_url ? (
                     <Image
                       src={ev.imagem_url}
-                      alt={ev.titulo}
+                      alt={ev.titulo || "Evento no The Mulligan's Pub"}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover photo-bw group-hover:photo-bw-hover"
