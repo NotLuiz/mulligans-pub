@@ -12,9 +12,9 @@ export const SITE = {
 
   /** Frase de posicionamento — usada no Hero e em metadados. */
   descricao:
-    "Um autêntico pub irlandês no coração de Belo Horizonte: cerveja gelada, comida de verdade e música ao vivo.",
+    "Um autêntico pub no coração de Belo Horizonte: cerveja gelada, comida de verdade e música ao vivo.",
   /** Versão curta para selos e etiquetas. */
-  selo: "Autêntico Pub Irlandês",
+  selo: "Autêntico Pub",
 
   cardapio: "https://mepay.meep.cloud/mulligans",
   sympla: "https://www.sympla.com.br/produtor/mulliganspub",

@@ -112,6 +112,33 @@ body {
     -webkit-user-select: text;
     user-select: text;
   }
+
+  /* ---------- Destaques sem hover (telas de toque) ----------
+     Em dispositivos sem mouse, `:hover` nunca dispara. Para que os cards,
+     fotos e overlays continuem com a mesma sensação de "vida" do desktop,
+     aplicamos os estados de destaque de forma permanente no toque. */
+
+  /* Cards: borda laranja + leve elevação sempre visíveis */
+  .card-rustic {
+    border-color: rgba(249, 115, 22, 0.35);
+    box-shadow: 0 22px 44px -24px rgba(249, 115, 22, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  /* Fotos: coloridas por padrão (sem depender de hover) */
+  .photo-bw {
+    filter: grayscale(0%) contrast(1);
+  }
+
+  /* Overlays e legendas que só apareciam no hover ficam sempre visíveis */
+  .group-hover\:opacity-100 {
+    opacity: 1;
+  }
+
+  /* Títulos que mudavam de cor no hover ganham o destaque permanente */
+  .group-hover\:text-orange-light {
+    color: var(--color-orange-light);
+  }
 }
 
 /* Textura sutil de grão sobre todo o site */
