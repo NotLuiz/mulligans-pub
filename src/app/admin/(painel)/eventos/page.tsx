@@ -4,7 +4,13 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { formatarDataHora } from "@/lib/site";
 
-type Evento = { id: string; titulo: string; data: string; publicado: boolean };
+type Evento = {
+  id: string;
+  titulo: string;
+  data: string;
+  publicado: boolean;
+  cliques_sympla?: number;
+};
 
 export default function EventosAdmin() {
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -21,7 +27,9 @@ export default function EventosAdmin() {
     setLoading(false);
   }
   useEffect(() => {
-    carregar();
+    (async () => {
+      await carregar();
+    })();
   }, []);
 
   async function excluir(id: string) {
@@ -66,8 +74,15 @@ export default function EventosAdmin() {
                   {formatarDataHora(ev.data)}
                 </p>
                 <p className="font-display text-2xl text-bone">{ev.titulo}</p>
-                <p className="text-xs text-bone-dim">
-                  {ev.publicado ? "✅ Publicado" : "📝 Rascunho"}
+                <p className="text-xs text-bone-dim flex items-center gap-3 flex-wrap">
+                  <span>{ev.publicado ? "✅ Publicado" : "📝 Rascunho"}</span>
+                  <span
+                    className="inline-flex items-center gap-1 text-orange-light"
+                    title="Cliques no botão de ingresso (Sympla)"
+                  >
+                    🎟️ {ev.cliques_sympla ?? 0}{" "}
+                    {(ev.cliques_sympla ?? 0) === 1 ? "clique" : "cliques"}
+                  </span>
                 </p>
               </div>
               <div className="flex gap-2">

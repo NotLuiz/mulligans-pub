@@ -37,7 +37,7 @@ export default function EventoPrivadoPage() {
             Eventos <span className="text-green-glow">Privados</span>
           </h1>
           <p className="text-bone-dim text-lg max-w-2xl mx-auto leading-relaxed">
-            Reserve o Mulligan's só para o seu grupo. Estrutura completa, cardápio
+            Reserve o Mulligan&apos;s só para o seu grupo. Estrutura completa, cardápio
             personalizado e uma equipe dedicada para fazer do seu evento um momento
             inesquecível.
           </p>

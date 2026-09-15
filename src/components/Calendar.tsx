@@ -6,6 +6,7 @@ import {
 } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { formatarHoraEvento, TIMEZONE } from "@/lib/site";
+import BotaoSympla from "@/components/BotaoSympla";
 
 type Evento = {
   id: string; titulo: string; descricao?: string; data: string;
@@ -120,14 +121,13 @@ export default function Calendar({ eventos }: { eventos: Evento[] }) {
                     {ev.descricao ? ` — ${ev.descricao}` : ""}
                   </p>
                   {ev.link_sympla && (
-                    <a
+                    <BotaoSympla
+                      eventoId={ev.id}
                       href={ev.link_sympla}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="btn-primary hover:btn-primary-hover text-xs !py-1.5 !px-3"
                     >
                       Comprar no Sympla
-                    </a>
+                    </BotaoSympla>
                   )}
                 </div>
               ))}

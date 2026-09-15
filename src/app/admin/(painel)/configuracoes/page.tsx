@@ -121,7 +121,7 @@ export default function ConfiguracoesAdmin() {
 
         <div>
           <label className="block text-sm mb-1 text-bone-dim">
-            Texto "Sobre" (aparece na Home)
+            Texto &quot;Sobre&quot; (aparece na Home)
           </label>
           <textarea
             rows={3}

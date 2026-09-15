@@ -20,6 +20,7 @@ import {
   MapPinIcon,
   IrelandFlagIcon,
 } from "@/components/SocialIcons";
+import BotaoSympla from "@/components/BotaoSympla";
 
 export const revalidate = 60;
 
@@ -127,7 +128,7 @@ export default async function Home() {
           />
 
           <h1 className="font-display text-6xl md:text-8xl lg:text-9xl leading-[0.9] mb-6">
-            <span className="text-grunge-green">The Mulligan's</span>
+            <span className="text-grunge-green">The Mulligan&apos;s</span>
             <br />
             <span className="text-grunge">Pub</span>
           </h1>
@@ -241,14 +242,13 @@ export default async function Home() {
                     <p className="text-bone-dim text-sm line-clamp-2 mb-4">{ev.descricao}</p>
                   )}
                   {ev.link_sympla && (
-                    <a
+                    <BotaoSympla
+                      eventoId={ev.id}
                       href={ev.link_sympla}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="btn-primary hover:btn-primary-hover text-sm mt-auto w-fit"
                     >
                       Comprar ingresso
-                    </a>
+                    </BotaoSympla>
                   )}
                 </div>
               </article>

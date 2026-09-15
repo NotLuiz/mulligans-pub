@@ -33,7 +33,9 @@ export default function GaleriaAdmin() {
     setFotos((data as Foto[]) || []);
   }
   useEffect(() => {
-    carregar();
+    (async () => {
+      await carregar();
+    })();
   }, []);
 
   async function upload(files: FileList) {

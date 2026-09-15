@@ -38,7 +38,7 @@ export default function LoginPage() {
             height={84}
             className="mx-auto mb-4 w-auto h-auto rounded-full ring-1 ring-green/40"
           />
-          <h1 className="font-display text-4xl text-orange-glow mb-1">The Mulligan's</h1>
+          <h1 className="font-display text-4xl text-orange-glow mb-1">The Mulligan&apos;s</h1>
           <p className="text-green-light text-xs uppercase tracking-[0.3em]">
             Painel Administrativo
           </p>

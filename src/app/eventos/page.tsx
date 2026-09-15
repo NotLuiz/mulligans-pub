@@ -3,6 +3,7 @@ import Calendar from "@/components/Calendar";
 import Image from "next/image";
 import { SITE, formatarDataHora } from "@/lib/site";
 import { SymplaIcon } from "@/components/SocialIcons";
+import BotaoSympla from "@/components/BotaoSympla";
 
 export const revalidate = 60;
 
@@ -100,14 +101,13 @@ export default async function EventosPage() {
                     <p className="text-sm text-bone-dim line-clamp-2 mb-3">{ev.descricao}</p>
                   )}
                   {ev.link_sympla && (
-                    <a
+                    <BotaoSympla
+                      eventoId={ev.id}
                       href={ev.link_sympla}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="btn-primary hover:btn-primary-hover text-sm !py-2 !px-4"
                     >
                       Comprar ingresso
-                    </a>
+                    </BotaoSympla>
                   )}
                 </div>
               </article>
