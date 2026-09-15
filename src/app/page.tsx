@@ -269,7 +269,7 @@ export default async function Home() {
               <h2 className="font-display text-5xl md:text-6xl text-grunge">A Casa</h2>
               <p className="text-bone-dim text-sm mt-2 flex items-center gap-2">
                 <IrelandFlagIcon className="w-5 h-3.5 rounded-[2px]" />
-                Um autêntico pub irlandês em BH 🍻
+                Um autêntico pub em BH 🍻
               </p>
             </div>
             <Link

@@ -110,17 +110,29 @@ export default function Navbar({ cardapioUrl = SITE.cardapio }: { cardapioUrl?: 
         </div>
 
         <button
+          type="button"
           aria-label={open ? "Fechar menu" : "Abrir menu"}
           aria-expanded={open}
-          className="md:hidden text-2xl text-bone"
+          aria-controls="menu-mobile"
           onClick={() => setOpen(!open)}
+          className={`md:hidden inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-sm font-semibold transition active:scale-95 ${
+            open
+              ? "btn-primary hover:btn-primary-hover"
+              : "btn-green hover:btn-green-hover"
+          }`}
         >
-          {open ? "✕" : "☰"}
+          <span className={`menu-bars ${open ? "menu-bars-open" : ""}`} aria-hidden="true">
+            <span className={`menu-bars-line ${open ? "menu-bars-line-open-top" : ""}`} />
+            <span className={`menu-bars-line ${open ? "menu-bars-line-open-mid" : ""}`} />
+            <span className={`menu-bars-line ${open ? "menu-bars-line-open-bottom" : ""}`} />
+          </span>
+          {open ? "Fechar" : "Menu"}
         </button>
       </nav>
 
       {/* ================= MENU MOBILE (estilo Linktree) ================= */}
       <div
+        id="menu-mobile"
         className={`md:hidden overflow-hidden transition-all duration-300 ${
           open ? "max-h-[85vh] overflow-y-auto" : "max-h-0"
         }`}
