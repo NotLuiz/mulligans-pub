@@ -29,6 +29,8 @@ export default function EventoForm({ id }: Props) {
   const [uploading, setUploading] = useState(false);
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
+  const [buscandoSympla, setBuscandoSympla] = useState(false);
+  const [avisoSympla, setAvisoSympla] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -71,6 +73,37 @@ export default function EventoForm({ id }: Props) {
     const { data } = supabase.storage.from("flyers").getPublicUrl(nomeArq);
     setImagemUrl(data.publicUrl);
     setUploading(false);
+  }
+
+  async function buscarDoSympla() {
+    setErro("");
+    setAvisoSympla("");
+    if (!link.trim()) {
+      setErro("Cole o link do Sympla antes de buscar.");
+      return;
+    }
+    setBuscandoSympla(true);
+    try {
+      const res = await fetch(`/api/sympla?url=${encodeURIComponent(link.trim())}`);
+      const dados = (await res.json()) as {
+        ok: boolean;
+        titulo?: string | null;
+        descricao?: string | null;
+        imagem?: string | null;
+        erro?: string;
+      };
+      if (!dados.ok) {
+        setErro(dados.erro || "Não consegui buscar os dados do Sympla.");
+        return;
+      }
+      if (dados.titulo && !titulo.trim()) setTitulo(dados.titulo);
+      if (dados.descricao) setDescricao(dados.descricao);
+      setAvisoSympla("Dados importados do Sympla. Revise antes de salvar.");
+    } catch {
+      setErro("Falha ao conectar com o Sympla.");
+    } finally {
+      setBuscandoSympla(false);
+    }
   }
 
   async function salvar(e: React.FormEvent) {
@@ -133,22 +166,36 @@ export default function EventoForm({ id }: Props) {
       </div>
 
       <div>
+        <label className="block text-sm mb-1 text-bone-dim">Link do Sympla</label>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            type="url"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            placeholder="https://www.sympla.com.br/..."
+            className={inputClass}
+          />
+          <button
+            type="button"
+            onClick={buscarDoSympla}
+            disabled={buscandoSympla || !link.trim()}
+            className="btn-outline hover:btn-outline-hover whitespace-nowrap disabled:opacity-50"
+          >
+            {buscandoSympla ? "Buscando..." : "Buscar do Sympla"}
+          </button>
+        </div>
+        <p className="text-xs text-bone-dim mt-2">
+          Cole o link do evento e clique em buscar para preencher título e descrição
+          automaticamente.
+        </p>
+      </div>
+
+      <div>
         <label className="block text-sm mb-1 text-bone-dim">Descrição</label>
         <textarea
           value={descricao}
           onChange={(e) => setDescricao(e.target.value)}
-          rows={3}
-          className={inputClass}
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm mb-1 text-bone-dim">Link do Sympla</label>
-        <input
-          type="url"
-          value={link}
-          onChange={(e) => setLink(e.target.value)}
-          placeholder="https://www.sympla.com.br/..."
+          rows={6}
           className={inputClass}
         />
       </div>
@@ -185,6 +232,7 @@ export default function EventoForm({ id }: Props) {
       </label>
 
       {erro && <p className="text-orange-light text-sm">{erro}</p>}
+      {avisoSympla && <p className="text-green-light text-sm">{avisoSympla}</p>}
 
       <div className="flex gap-3">
         <button

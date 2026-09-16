@@ -56,26 +56,3 @@ export function ClockIcon(props: IconProps) {
   );
 }
 
-/**
- * Bandeira da Irlanda — três faixas verticais (verde, branco e laranja).
- * As cores são fixas (não herdam currentColor) para manter a fidelidade da bandeira.
- */
-export function IrelandFlagIcon(props: IconProps) {
-  return (
-    <svg viewBox="0 0 30 20" role="img" aria-label="Bandeira da Irlanda" {...props}>
-      <rect width="10" height="20" fill="#169b62" />
-      <rect x="10" width="10" height="20" fill="#ffffff" />
-      <rect x="20" width="10" height="20" fill="#ff883e" />
-      <rect
-        x="0.5"
-        y="0.5"
-        width="29"
-        height="19"
-        fill="none"
-        stroke="rgba(0,0,0,0.35)"
-        strokeWidth="1"
-        rx="1.5"
-      />
-    </svg>
-  );
-}

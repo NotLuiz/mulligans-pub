@@ -12,8 +12,8 @@ type Props = {
 };
 
 /**
- * Botão de compra de ingresso que registra o clique no Supabase antes de
- * abrir o Sympla. O contador é exibido apenas no painel admin.
+ * Botão de compra de ingresso que registra o clique antes de abrir o Sympla.
+ * O contador é exibido apenas no painel admin.
  *
  * Histórico das tentativas (para não repetir os erros):
  *
@@ -21,16 +21,20 @@ type Props = {
  *    (`target="_blank"`); ao descarregar a página, o navegador cancelava a
  *    requisição assíncrona pendente.
  *
- * 2) `navigator.sendBeacon()` com headers — funcionava no desktop, mas
+ * 2) `navigator.sendBeacon()` direto no Supabase — funcionava no desktop, mas
  *    falhava no celular. Motivo: o `sendBeacon` NÃO permite headers
  *    customizados, então `apikey`/`Authorization` nunca eram enviados e o
  *    Supabase respondia 401. No mobile o beacon retornava `true` e o código
  *    saía antes do fallback.
  *
- * Solução atual: enviamos a chave do Supabase na QUERY STRING
- * (`?apikey=...`), que o PostgREST aceita como alternativa ao header. Assim
- * o `sendBeacon` funciona em qualquer dispositivo, sem depender de headers.
- * Mantemos o `fetch` com `keepalive` como fallback.
+ * 3) `sendBeacon` com a apikey na query string — ainda falhava no 4G, pois
+ *    alguns navegadores móveis/proxies descartam requisições cross-origin
+ *    feitas no unload.
+ *
+ * Solução atual: o beacon aponta para a rota INTERNA `/api/clique`
+ * (same-origin, sem CORS e sem headers). O servidor Next.js é quem chama a
+ * RPC do Supabase com as credenciais corretas. Mantemos o `fetch` com
+ * `keepalive` como fallback.
  */
 export default function BotaoSympla({
   eventoId,
@@ -39,14 +43,7 @@ export default function BotaoSympla({
   className = "",
 }: Props) {
   function registrarClique() {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) return;
-
-    // A chave vai na query string: o sendBeacon não suporta headers.
-    const endpoint =
-      `${url}/rest/v1/rpc/incrementar_clique_sympla` +
-      `?apikey=${encodeURIComponent(key)}`;
+    const endpoint = "/api/clique";
     const body = JSON.stringify({ evento_id: eventoId });
 
     // 1) Caminho preferencial: sendBeacon (sobrevive à troca de aba).
@@ -60,11 +57,7 @@ export default function BotaoSympla({
     try {
       void fetch(endpoint, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          apikey: key,
-          Authorization: `Bearer ${key}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body,
         keepalive: true,
       });

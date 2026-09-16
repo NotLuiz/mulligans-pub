@@ -8,7 +8,6 @@ import {
   InstagramIcon,
   WhatsappIcon,
   MenuBookIcon,
-  IrelandFlagIcon,
   SymplaIcon,
   MapPinIcon,
 } from "@/components/SocialIcons";
@@ -52,7 +51,6 @@ export default function Navbar({ cardapioUrl = SITE.cardapio }: { cardapioUrl?: 
           <span className="font-display text-2xl md:text-3xl leading-none hidden sm:inline-flex items-center gap-2">
             <span className="text-green-glow">The Mulligan&apos;s</span>{" "}
             <span className="text-bone">Pub</span>
-            <IrelandFlagIcon className="w-6 h-4 rounded-[2px] shadow-sm" />
           </span>
         </Link>
 

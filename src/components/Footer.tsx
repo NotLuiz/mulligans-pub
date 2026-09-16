@@ -9,7 +9,6 @@ import {
   MenuBookIcon,
   MapPinIcon,
   ClockIcon,
-  IrelandFlagIcon,
 } from "@/components/SocialIcons";
 
 type Config = {
@@ -70,7 +69,6 @@ export default async function Footer() {
             Cerveja gelada, comida de verdade e música ao vivo no coração de BH.
           </p>
           <p className="flex items-center gap-2 text-green-light text-xs font-semibold uppercase tracking-[0.2em] mb-5">
-            <IrelandFlagIcon className="w-5 h-3.5 rounded-[2px]" />
             {SITE.selo}
           </p>
 

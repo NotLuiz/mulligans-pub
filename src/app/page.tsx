@@ -18,7 +18,6 @@ import {
   SymplaIcon,
   MenuBookIcon,
   MapPinIcon,
-  IrelandFlagIcon,
 } from "@/components/SocialIcons";
 import BotaoSympla from "@/components/BotaoSympla";
 
@@ -113,7 +112,6 @@ export default async function Home() {
         <div className="relative z-10 px-4 animate-rise">
           <div className="kicker justify-center mb-6">
             <span className="h-px w-8 bg-green-light" />
-            <IrelandFlagIcon className="w-6 h-4 rounded-[2px] shadow" />
             {SITE.selo} · Desde {SITE.desde}
             <span className="h-px w-8 bg-green-light" />
           </div>
@@ -268,7 +266,6 @@ export default async function Home() {
               </span>
               <h2 className="font-display text-5xl md:text-6xl text-grunge">A Casa</h2>
               <p className="text-bone-dim text-sm mt-2 flex items-center gap-2">
-                <IrelandFlagIcon className="w-5 h-3.5 rounded-[2px]" />
                 Um autêntico pub em BH 🍻
               </p>
             </div>
@@ -369,14 +366,14 @@ export default async function Home() {
 
               <a
                 href={whatsappLink(
-                  "Olá! Gostaria de saber mais sobre a promoção de aniversário no Mulligan's Pub."
+                  "Olá! Vou comemorar meu aniversário no Mulligan's Pub e queria saber mais sobre a promoção."
                 )}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary hover:btn-primary-hover"
               >
                 <WhatsappIcon className="w-4 h-4" />
-                Reservar minha festa
+                Falar no WhatsApp
               </a>
             </div>
           </div>
