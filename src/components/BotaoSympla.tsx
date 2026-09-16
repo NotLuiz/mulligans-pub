@@ -15,17 +15,22 @@ type Props = {
  * Botão de compra de ingresso que registra o clique no Supabase antes de
  * abrir o Sympla. O contador é exibido apenas no painel admin.
  *
- * Por que não usamos o client do Supabase aqui:
- * O link abre em nova aba (`target="_blank"`). Quando isso acontece, o
- * navegador descarrega a página atual e CANCELA requisições assíncronas
- * pendentes — a chamada `supabase.rpc()` era abortada antes de chegar ao
- * servidor, por isso o contador nunca subia.
+ * Histórico das tentativas (para não repetir os erros):
  *
- * Solução: `navigator.sendBeacon()`, uma API feita exatamente para enviar
- * dados que precisam sobreviver à navegação/descarga da página. Ela é
- * enfileirada pelo navegador e enviada mesmo que a aba seja fechada ou
- * trocada. Como fallback (navegadores antigos), usamos `fetch` com
- * `keepalive: true`, que tem o mesmo efeito.
+ * 1) `supabase.rpc()` — falhava porque o link abre em nova aba
+ *    (`target="_blank"`); ao descarregar a página, o navegador cancelava a
+ *    requisição assíncrona pendente.
+ *
+ * 2) `navigator.sendBeacon()` com headers — funcionava no desktop, mas
+ *    falhava no celular. Motivo: o `sendBeacon` NÃO permite headers
+ *    customizados, então `apikey`/`Authorization` nunca eram enviados e o
+ *    Supabase respondia 401. No mobile o beacon retornava `true` e o código
+ *    saía antes do fallback.
+ *
+ * Solução atual: enviamos a chave do Supabase na QUERY STRING
+ * (`?apikey=...`), que o PostgREST aceita como alternativa ao header. Assim
+ * o `sendBeacon` funciona em qualquer dispositivo, sem depender de headers.
+ * Mantemos o `fetch` com `keepalive` como fallback.
  */
 export default function BotaoSympla({
   eventoId,
@@ -38,7 +43,10 @@ export default function BotaoSympla({
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !key) return;
 
-    const endpoint = `${url}/rest/v1/rpc/incrementar_clique_sympla`;
+    // A chave vai na query string: o sendBeacon não suporta headers.
+    const endpoint =
+      `${url}/rest/v1/rpc/incrementar_clique_sympla` +
+      `?apikey=${encodeURIComponent(key)}`;
     const body = JSON.stringify({ evento_id: eventoId });
 
     // 1) Caminho preferencial: sendBeacon (sobrevive à troca de aba).
